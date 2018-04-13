@@ -3,12 +3,15 @@ import socketserver
 import http.client
 import json
 
-
+IP = 'localhost'
 PORT = 8000
+MAX_OPEN_REQUESTS = 5
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
         headers = {'User-Agent': 'http-client'}
 
         conn = http.client.HTTPSConnection("api.fda.gov")
@@ -20,27 +23,27 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         repos = json.loads(repos_raw)
         drugs = []
-        intro = "<!doctype html>" + "\n" + "<html>" + "\n" + "<body>" + "\n" "<ol>" + "\n"
-        end = "</ol>" + "\n" + "</body>" + "\n" + "</html>"
-
         for i in range(len(repos['results'])):
-            drugs.append(repos['result'][i]['active_ingredient'][0])
+            print(i)
+            try:
+                drugs.append(repos['results'][i]['active_ingredient'][0])
+            except KeyError:
+                drugs.append("This index has no drug")
 
         with open("drug.html", "w") as f:
-            f.write(intro)
             for element in drugs:
-                drugs_list = "<li>" + element + "<\li>" + "\n"
-                f.write(drug_list)
-            f.write(end)
+                f.write("<li>" + element)
         with open("drug.html","r") as f:
             drugs = f.read()
-
-        self.wfile.write(bytes(message, "utf8"))
-        return
-
-Handler = http.server.SimpleHTTPRequestHandler
+        drugs = drugs + self.path
+        self.wfile.write(bytes(drugs, "utf8"))
 Handler = testHTTPRequestHandler
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
 print("serving at port", PORT)
-httpd.serve_forever()
+try:
+    httpd.serve_forever()
+except KeyboardInterrupt:
+        pass
+httpd.server_close()
+do_GET(self)
