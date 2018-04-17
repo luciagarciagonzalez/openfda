@@ -5,7 +5,7 @@ import json
 
 IP = 'localhost'
 PORT = 8000
-MAX_OPEN_REQUESTS = 5
+MAX_OPEN_REQUESTS= 5
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
