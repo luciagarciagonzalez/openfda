@@ -35,6 +35,14 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(bytes(new_drugs, "utf8"))
         return
 
+    with open("finalsearch.html", "w") as f:
+        for element in drugs:
+            f.write("<ul>" + element + "</ul>")
+    with open("finalsearch.html", "r") as f:
+        drugs = f.read()
+    drugs = drugs + self.path
+    self.wfile.write(bytes(drugs, "utf8"))
+
 
 Handler = testHTTPRequestHandler
 
