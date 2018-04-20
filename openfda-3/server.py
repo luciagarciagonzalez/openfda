@@ -26,13 +26,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         for i in range(len(repos['results'])):
             print(i)
             try:
-                drugs.append(repos['results'][i]['active_ingredient'][0])
+                drugs.append(repos['results'][i]['id'])
             except KeyError:
                 drugs.append("This index has no drug")
 
         with open("drug.html", "w") as f:
             for element in drugs:
-                f.write("<li>" + element)
+                f.write("<ol>" + element+"</ol>")
         with open("drug.html","r") as f:
             drugs = f.read()
         drugs = drugs + self.path
