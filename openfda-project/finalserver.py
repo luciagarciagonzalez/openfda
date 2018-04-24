@@ -14,11 +14,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
         if self.path == "/":
-            with open("search.html", "r") as f:
+            with open("finalsearch.html", "r") as f:
                 message = f.read()
                 self.wfile.write(bytes(message, "utf8"))
 
-        elif "search" in self.path:
+        elif "searchDrugs?" in self.path:
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             data = self.path.strip("search?").split("&")
@@ -34,14 +34,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             new_drugs = str(drugs)
             self.wfile.write(bytes(new_drugs, "utf8"))
         return
-
-    with open("finalsearch.html", "w") as f:
-        for element in drugs:
-            f.write("<ul>" + element + "</ul>")
-    with open("finalsearch.html", "r") as f:
-        drugs = f.read()
-    drugs = drugs + self.path
-    self.wfile.write(bytes(drugs, "utf8"))
 
 
 Handler = testHTTPRequestHandler
