@@ -85,10 +85,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             drugs = json.loads(drug_raw)
             print(drugs)
             for i in range(len(drugs['results'])):
-                if 'brand_name' in drugs['results'][i]['openfda']:
+                try:
+                    if 'openfda' in drugs['results'][i]:
                         drug_list.append(drugs['results'][i]['openfda']["brand_name"][0])
-                else:
-                    continue
+                except KeyError:
+                    drug_list.append('Unknown')
 
 
             with open("code.html", "w") as f:
@@ -107,8 +108,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             data = self.path.split("=")
-            company = data[1]
-            url = "/drug/label.json?search=manufacturer_name:" + company
+            limit = data[1]
+            url = "/drug/label.json?" + "limit=" + limit
             print(url)
             conn.request("GET", url, None, headers)
             r1 = conn.getresponse()
@@ -117,14 +118,14 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             companies = json.loads(company_raw)
             for i in range(len(companies['results'])):
                 try:
-                    if "openfda" in companies["results"][i]:
-                        companies_list.append(companies['results'][i]['openfda']["brand_name"][0])
+                    if "openfda" in companies['results'][i]:
+                        companies_list.append(companies['results'][i]['openfda']["manufacturer_name"][0])
                 except KeyError:
                     companies_list.append("Unknown")
 
             with open("code.html", "w") as f:
                 f.write("<!doctype html>" + "<html>" + "<body>" + "<ul>")
-                for element in list:
+                for element in companies_list:
                     element_1 = "<li>" + element + "</li>" + "\n"
                     f.write(element_1)
                 f.write("</ul>" + "</body>" + "</html>")
