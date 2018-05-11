@@ -24,8 +24,8 @@ import sys
 import threading
 import time
 import unittest
-
 import requests
+
 
 from html.parser import HTMLParser
 
