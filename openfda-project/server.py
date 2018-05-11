@@ -5,6 +5,8 @@ import json
 
 IP = 'localhost'
 PORT = 8000
+socketserver.TCPServer.allow_reuse_adress = True
+unknown = "unknown"
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -316,6 +318,14 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                         file = f.read()
 
                     self.wfile.write(bytes(file, "utf8"))
+            elif "secret" in self.path:
+                self.send_response(401)
+                self.send_header('WWW-Authenticate', 'Basic Realm = "Unauthorized"')
+                self.end_headers()
+            elif "redirect" in self.path:
+                self.send_response(302)
+                self.send_hearder('Location','http:localhost:8000/')
+                self.end_headers()
 
         except KeyError:
             self.send_response(404)
