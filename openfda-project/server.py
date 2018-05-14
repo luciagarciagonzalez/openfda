@@ -40,9 +40,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     conn.close()
                     drugs = json.loads(drugs_raw)
                     for i in range(len(drugs['results'])):
-                        if 'active_ingredient' in drugs['results'][i]:
+                        try:
+                            if 'active_ingredient' in drugs['results'][i]:
                                 list_drugs.append(drugs['results'][i]['active_ingredient'][0])
-                        else:
+                        except KeyError:
                             list_drugs.append('There is no drug')
 
                     with open("code.html", "w") as f:
@@ -68,9 +69,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     conn.close()
                     drugs = json.loads(drugs_raw)
                     for i in range(len(drugs['results'])):
-                        if 'active_ingredient' in drugs['results'][i]:
-                            list_drugs.append(drugs['results'][i]['active_ingredient'][0])
-                        else:
+                        try:
+                            if 'active_ingredient' in drugs['results'][i]:
+                                list_drugs.append(drugs['results'][i]['active_ingredient'][0])
+                        except KeyError:
                             list_drugs.append('There is no drug')
 
                     with open("code.html", "w") as f:
@@ -103,9 +105,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     conn.close()
                     companies = json.loads(company_raw)
                     for i in range(len(companies['results'])):
-                        if 'openfda' in companies['results'][i]:
-                            list_company.append(companies['results'][i]["openfda"]['manufacturer_name'][0])
-                        else:
+                        try:
+                            if 'openfda' in companies['results'][i]:
+                                list_company.append(companies['results'][i]["openfda"]['manufacturer_name'][0])
+                        except KeyError:
                             list_company.append('There is no manufacturer name')
                     with open("code.html", "w") as f:
                         f.write("<!doctype html>" + "<html>" + "<body>" + "<ul>")
@@ -128,9 +131,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     conn.close()
                     companies = json.loads(company_raw)
                     for i in range(len(companies['results'])):
-                        if 'openfda' in companies['results'][i]:
-                            list_company.append(companies['results'][i]["openfda"]['manufacturer_name'][0])
-                        else:
+                        try:
+                            if 'openfda' in companies['results'][i]:
+                                list_company.append(companies['results'][i]["openfda"]['manufacturer_name'][0])
+                        except KeyError:
                             list_company.append('There is no manufacturer name')
                     with open("code.html", "w") as f:
                         f.write("<!doctype html>" + "<html>" + "<body>" + "<ul>")
