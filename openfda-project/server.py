@@ -6,20 +6,23 @@ import json
 IP = 'localhost'
 PORT = 8000
 socketserver.TCPServer.allow_reuse_adress = True
-unknown = "unknown"
+unknow = "unknown"
 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
         try:
             if self.path == "/":
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
                 with open("finalsearch.html", "r") as f:
                     message = f.read()
                     self.wfile.write(bytes(message, "utf8"))
 
-            if "searchDrug" in self.path:
+            elif "searchDrug" in self.path:
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
                 list_drugs = []
                 headers = {'User-Agent': 'http-client'}
                 conn = http.client.HTTPSConnection("api.fda.gov")
@@ -78,6 +81,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
             elif "searchCompany" in self.path:
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
                 list_company = []
                 headers = {'User-Agent': 'http-client'}
                 conn = http.client.HTTPSConnection("api.fda.gov")
@@ -134,6 +140,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
             elif "listDrugs" in self.path:
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
                 drug_list = []
                 headers = {'User-Agent': 'http-client'}
                 conn = http.client.HTTPSConnection("api.fda.gov")
@@ -200,6 +209,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
             elif "listCompanies" in self.path:
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
                 companies_list = []
                 headers = {'User-Agent': 'http-client'}
                 conn = http.client.HTTPSConnection("api.fda.gov")
@@ -260,6 +272,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     self.wfile.write(bytes(file, "utf8"))
 
             elif "listWarnings" in self.path:
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
                 warning_list = []
                 headers = {'User-Agent': 'http-client'}
                 conn = http.client.HTTPSConnection("api.fda.gov")
@@ -320,12 +335,20 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     self.wfile.write(bytes(file, "utf8"))
             elif "secret" in self.path:
                 self.send_response(401)
-                self.send_header('WWW-Authenticate', 'Basic Realm = "Unauthorized"')
+                self.send_header('WWW-Authenticate', 'Basic Realm = "OpenFDA Private Zone"')
                 self.end_headers()
             elif "redirect" in self.path:
                 self.send_response(302)
-                self.send_hearder('Location','http:localhost:8000/')
+                self.send_header('Location','http://localhost:8000/')
                 self.end_headers()
+
+            else:
+                self.send_response(404)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                with open("error.html", "r") as f:
+                    file = f.read()
+                self.wfile.write(bytes(file,"utf8"))
 
         except KeyError:
             self.send_response(404)
@@ -345,11 +368,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 Handler = testHTTPRequestHandler
 
-httpd = socketserver.TCPServer(("", PORT), Handler)
+httpd = socketserver.TCPServer((IP, PORT), Handler)
 print("serving at port", PORT)
 try:
     httpd.serve_forever()
 except KeyboardInterrupt:
         pass
 httpd.server_close()
-do_GET(self)
