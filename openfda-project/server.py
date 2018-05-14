@@ -103,7 +103,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     conn.close()
                     companies = json.loads(company_raw)
                     for i in range(len(companies['results'])):
-                        if 'active_ingredient' in companies['results'][i]:
+                        if 'openfda' in companies['results'][i]:
                             list_company.append(companies['results'][i]["openfda"]['manufacturer_name'][0])
                         else:
                             list_company.append('There is no manufacturer name')
@@ -128,7 +128,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     conn.close()
                     companies = json.loads(company_raw)
                     for i in range(len(companies['results'])):
-                        if 'active_ingredient' in companies['results'][i]:
+                        if 'openfda' in companies['results'][i]:
                             list_company.append(companies['results'][i]["openfda"]['manufacturer_name'][0])
                         else:
                             list_company.append('There is no manufacturer name')
