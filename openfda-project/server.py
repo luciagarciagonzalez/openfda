@@ -59,30 +59,31 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     data = self.path.split("=")
                     drug = data[1]
                     limit = data[2]
-                    if limit in self.path:
-                        url = "/drug/label.json?search=active_ingredient:" + drug + "=" + limit
-                        print(url)
-                        conn.request("GET", url, None, headers)
-                        r1 = conn.getresponse()
-                        drugs_raw = r1.read().decode("utf-8")
-                        conn.close()
-                        drugs = json.loads(drugs_raw)
-                        for i in range(len(drugs['results'])):
-                            try:
-                                if 'openfda' in drugs['results'][i]:
-                                    list_drugs.append(drugs['results'][i]['active_ingredient'][0])
-                            except KeyError:
-                                list_drugs.append('There is no drug')
+                    if limit == "":
+                        limit = "10"
+                    url = "/drug/label.json?search=active_ingredient:" + drug + "=" + limit
+                    print(url)
+                    conn.request("GET", url, None, headers)
+                    r1 = conn.getresponse()
+                    drugs_raw = r1.read().decode("utf-8")
+                    conn.close()
+                    drugs = json.loads(drugs_raw)
+                    for i in range(len(drugs['results'])):
+                        try:
+                            if 'openfda' in drugs['results'][i]:
+                                list_drugs.append(drugs['results'][i]['active_ingredient'][0])
+                        except KeyError:
+                            list_drugs.append('There is no drug')
 
-                        with open("code.html", "w") as f:
-                            f.write("<!doctype html>" + "<html>" + "<body>" + "<ul>")
-                            for element in list_drugs:
-                                element_1 = "<li>" + element + "</li>" + "\n"
-                                f.write(element_1)
-                            f.write("</ul>" + "</body>" + "</html>")
-                        with open("code.html", "r") as f:
-                            file = f.read()
-                        self.wfile.write(bytes(file, "utf8"))
+                    with open("code.html", "w") as f:
+                        f.write("<!doctype html>" + "<html>" + "<body>" + "<ul>")
+                        for element in list_drugs:
+                            element_1 = "<li>" + element + "</li>" + "\n"
+                            f.write(element_1)
+                        f.write("</ul>" + "</body>" + "</html>")
+                    with open("code.html", "r") as f:
+                        file = f.read()
+                    self.wfile.write(bytes(file, "utf8"))
 
             elif "searchCompany" in self.path:
                 self.send_response(200)
@@ -120,6 +121,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     self.wfile.write(bytes(file, "utf8"))
                 elif "&" in self.path:
                     limit = data[2]
+                    if limit == "":
+                        limit = "10"
                     url = "/drug/label.json?search=openfda.manufacturer_name:" + company + ("=") + limit
                     print(url)
                     conn.request("GET", url, None, headers)
